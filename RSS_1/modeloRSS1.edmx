@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="bancoRSSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="cat_codigo" />
+          </Key>
+          <Property Name="cat_codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="cat_descricao" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Feed">
+          <Key>
+            <PropertyRef Name="feed_codigo" />
+          </Key>
+          <Property Name="feed_codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="feed_descricao" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="feed_site" Type="nvarchar" MaxLength="100" />
+          <Property Name="feed_url" Type="nvarchar" MaxLength="200" />
+          <Property Name="feed_qt_nao_lidos" Type="int" />
+          <Property Name="cat_codigo" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="item_codigo" />
+          </Key>
+          <Property Name="item_codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="item_url" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="item_titulo" Type="nvarchar" MaxLength="200" />
+          <Property Name="item_lido" Type="bit" />
+          <Property Name="item_conteudo" Type="nvarchar(max)" />
+          <Property Name="item_dthr" Type="datetime" />
+          <Property Name="feed_codigo" Type="int" />
+        </EntityType>
+        <EntityType Name="Regra">
+          <Key>
+            <PropertyRef Name="regra_codigo" />
+          </Key>
+          <Property Name="regra_codigo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="regra_chaves" Type="nvarchar(max)" />
+          <Property Name="regra_ativo" Type="bit" />
+          <Property Name="regra_tipo" Type="nvarchar" MaxLength="20" />
+        </EntityType>
+        <Association Name="FK_Feed_To_Categoria">
+          <End Role="Categoria" Type="Self.Categoria" Multiplicity="1" />
+          <End Role="Feed" Type="Self.Feed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria">
+              <PropertyRef Name="cat_codigo" />
+            </Principal>
+            <Dependent Role="Feed">
+              <PropertyRef Name="cat_codigo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Item_To_Feed">
+          <End Role="Feed" Type="Self.Feed" Multiplicity="0..1" />
+          <End Role="Item" Type="Self.Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Feed">
+              <PropertyRef Name="feed_codigo" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="feed_codigo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="bancoRSSModelStoreContainer">
+          <EntitySet Name="Categoria" EntityType="Self.Categoria" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Feed" EntityType="Self.Feed" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Item" EntityType="Self.Item" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Regra" EntityType="Self.Regra" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Feed_To_Categoria" Association="Self.FK_Feed_To_Categoria">
+            <End Role="Categoria" EntitySet="Categoria" />
+            <End Role="Feed" EntitySet="Feed" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Item_To_Feed" Association="Self.FK_Item_To_Feed">
+            <End Role="Feed" EntitySet="Feed" />
+            <End Role="Item" EntitySet="Item" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="bancoRSSModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Categoria">
+          <Key>
+            <PropertyRef Name="cat_codigo" />
+          </Key>
+          <Property Name="cat_codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="cat_descricao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="Feeds" Relationship="Self.FK_Feed_To_Categoria" FromRole="Categoria" ToRole="Feed" />
+        </EntityType>
+        <EntityType Name="Feed">
+          <Key>
+            <PropertyRef Name="feed_codigo" />
+          </Key>
+          <Property Name="feed_codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="feed_descricao" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="feed_qt_nao_lidos" Type="Int32" />
+          <Property Name="cat_codigo" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Categoria" Relationship="Self.FK_Feed_To_Categoria" FromRole="Feed" ToRole="Categoria" />
+          <Property Name="feed_site" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="feed_url" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Items" Relationship="bancoRSSModel.FK_Item_To_Feed" FromRole="Feed" ToRole="Item" />
+        </EntityType>
+        <EntityType Name="Regra">
+          <Key>
+            <PropertyRef Name="regra_codigo" />
+          </Key>
+          <Property Name="regra_codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="regra_chaves" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="regra_ativo" Type="Boolean" />
+          <Property Name="regra_tipo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_Feed_To_Categoria">
+          <End Role="Categoria" Type="Self.Categoria" Multiplicity="1" />
+          <End Role="Feed" Type="Self.Feed" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Categoria">
+              <PropertyRef Name="cat_codigo" />
+            </Principal>
+            <Dependent Role="Feed">
+              <PropertyRef Name="cat_codigo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="bancoRSSEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Categorias" EntityType="Self.Categoria" />
+          <EntitySet Name="Feeds" EntityType="Self.Feed" />
+          <EntitySet Name="Regras" EntityType="Self.Regra" />
+          <AssociationSet Name="FK_Feed_To_Categoria" Association="Self.FK_Feed_To_Categoria">
+            <End Role="Categoria" EntitySet="Categorias" />
+            <End Role="Feed" EntitySet="Feeds" />
+          </AssociationSet>
+          <EntitySet Name="Items" EntityType="bancoRSSModel.Item" />
+          <AssociationSet Name="FK_Item_To_Feed" Association="bancoRSSModel.FK_Item_To_Feed">
+            <End Role="Feed" EntitySet="Feeds" />
+            <End Role="Item" EntitySet="Items" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Item">
+          <Key>
+            <PropertyRef Name="item_codigo" />
+          </Key>
+          <Property Name="item_codigo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="item_url" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="item_titulo" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="item_lido" Type="Boolean" />
+          <Property Name="item_conteudo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="item_dthr" Type="DateTime" Precision="3" />
+          <Property Name="feed_codigo" Type="Int32" />
+          <NavigationProperty Name="Feed" Relationship="bancoRSSModel.FK_Item_To_Feed" FromRole="Item" ToRole="Feed" />
+        </EntityType>
+        <Association Name="FK_Item_To_Feed">
+          <End Type="bancoRSSModel.Feed" Role="Feed" Multiplicity="0..1" />
+          <End Type="bancoRSSModel.Item" Role="Item" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Feed">
+              <PropertyRef Name="feed_codigo" />
+            </Principal>
+            <Dependent Role="Item">
+              <PropertyRef Name="feed_codigo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="bancoRSSModelStoreContainer" CdmEntityContainer="bancoRSSEntities">
+          <EntitySetMapping Name="Categorias">
+            <EntityTypeMapping TypeName="bancoRSSModel.Categoria">
+              <MappingFragment StoreEntitySet="Categoria">
+                <ScalarProperty Name="cat_codigo" ColumnName="cat_codigo" />
+                <ScalarProperty Name="cat_descricao" ColumnName="cat_descricao" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Feeds">
+            <EntityTypeMapping TypeName="bancoRSSModel.Feed">
+              <MappingFragment StoreEntitySet="Feed">
+                <ScalarProperty Name="feed_url" ColumnName="feed_url" />
+                <ScalarProperty Name="feed_site" ColumnName="feed_site" />
+                <ScalarProperty Name="feed_codigo" ColumnName="feed_codigo" />
+                <ScalarProperty Name="feed_descricao" ColumnName="feed_descricao" />
+                <ScalarProperty Name="feed_qt_nao_lidos" ColumnName="feed_qt_nao_lidos" />
+                <ScalarProperty Name="cat_codigo" ColumnName="cat_codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Regras">
+            <EntityTypeMapping TypeName="bancoRSSModel.Regra">
+              <MappingFragment StoreEntitySet="Regra">
+                <ScalarProperty Name="regra_codigo" ColumnName="regra_codigo" />
+                <ScalarProperty Name="regra_chaves" ColumnName="regra_chaves" />
+                <ScalarProperty Name="regra_ativo" ColumnName="regra_ativo" />
+                <ScalarProperty Name="regra_tipo" ColumnName="regra_tipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Items">
+            <EntityTypeMapping TypeName="bancoRSSModel.Item">
+              <MappingFragment StoreEntitySet="Item">
+                <ScalarProperty Name="feed_codigo" ColumnName="feed_codigo" />
+                <ScalarProperty Name="item_dthr" ColumnName="item_dthr" />
+                <ScalarProperty Name="item_conteudo" ColumnName="item_conteudo" />
+                <ScalarProperty Name="item_lido" ColumnName="item_lido" />
+                <ScalarProperty Name="item_titulo" ColumnName="item_titulo" />
+                <ScalarProperty Name="item_url" ColumnName="item_url" />
+                <ScalarProperty Name="item_codigo" ColumnName="item_codigo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

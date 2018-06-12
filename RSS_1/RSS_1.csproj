@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>RSS_1</RootNamespace>
     <AssemblyName>RSS_1</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PublishUrl>publish\</PublishUrl>
@@ -26,6 +26,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -47,9 +48,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CodeHollow.FeedReader, Version=1.1.2.0, Culture=neutral, PublicKeyToken=66d870f2b3d70f48, processorArchitecture=MSIL">
+      <HintPath>..\packages\CodeHollow.FeedReader.1.1.2\lib\net452\CodeHollow.FeedReader.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.8.4.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.8.4\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -61,14 +77,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Data\modeloRSS.cs">
-      <DependentUpon>modeloRSS.dbml</DependentUpon>
+    <Compile Include="Categoria.cs">
+      <DependentUpon>modeloRSS1.tt</DependentUpon>
     </Compile>
-    <Compile Include="App_Data\modeloRSS1.designer.cs">
+    <Compile Include="Classes\FeedDados.cs" />
+    <Compile Include="Feed.cs">
+      <DependentUpon>modeloRSS1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Item.cs">
+      <DependentUpon>modeloRSS1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="modeloRSS1.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>modeloRSS.dbml</DependentUpon>
+      <DependentUpon>modeloRSS1.Context.tt</DependentUpon>
     </Compile>
+    <Compile Include="modeloRSS1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>modeloRSS1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="modeloRSS11.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>modeloRSS1.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Regra.cs">
+      <DependentUpon>modeloRSS1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\ItemDados.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -88,15 +125,17 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="App_Data\modeloRSS.dbml">
-      <Generator>MSLinqToSQLGenerator</Generator>
-      <LastGenOutput>modeloRSS1.designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+    <EntityDeploy Include="modeloRSS1.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>modeloRSS11.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="modeloRSS1.edmx.diagram">
+      <DependentUpon>modeloRSS1.edmx</DependentUpon>
     </None>
-    <None Include="App_Data\modeloRSS.dbml.layout">
-      <DependentUpon>modeloRSS.dbml</DependentUpon>
-    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Item.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -111,16 +150,27 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\bancoRSS.mdf">
+    <Content Include="modeloRSS1.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>modeloRSS1.Context.cs</LastGenOutput>
+      <DependentUpon>modeloRSS1.edmx</DependentUpon>
+    </Content>
+    <Content Include="modeloRSS1.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>modeloRSS1.edmx</DependentUpon>
+      <LastGenOutput>modeloRSS1.cs</LastGenOutput>
+    </Content>
+    <Content Include="bancoRSS.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="App_Data\bancoRSS_log.ldf">
+    <Content Include="bancoRSS_log.ldf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <DependentUpon>bancoRSS.mdf</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">

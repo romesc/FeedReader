@@ -11,6 +11,7 @@ namespace CodeHollow.FeedReader.ConsoleSample
             {
                 Console.WriteLine("Please enter feed url:");
                 string url = Console.ReadLine();
+                url = "https://iplusall.com/feed/";
 
                 var urls = FeedReader.GetFeedUrlsFromUrlAsync(url).Result;
 
